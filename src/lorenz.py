@@ -3,7 +3,6 @@ import pygame
 
 # Credit: QuantitativeBytes 
 
-print("Test")
 
 class Lorenz:
     def __init__(self):
@@ -12,7 +11,7 @@ class Lorenz:
         self.zMin, self.zMax = 0, 50
         self.X, self.Y, self.Z = 0.1, 0.0, 0.0 
         self.oX, self.oY, self.oZ = self.X, self.Y, self.Z 
-        self.dt = 0.01 
+        self.dt = 0.005 
         self.a, self.b, self.c = 10, 28, 8/3 
         self.pixelColor = (255, 0, 0)
 
@@ -28,7 +27,7 @@ class Lorenz:
         newPos = self.ConvertToScreen(self.X, self.Y, self.xMin, self.xMax, self.yMin, self.yMax, width, height)
 
         # Draw current line segment 
-        newRect = pygame.draw.line(displaySurface, self.pixelColor, oldPos, newPos, 2)
+        newRect = pygame.draw.aaline(displaySurface, self.pixelColor, oldPos, newPos, blend=1)
 
         return newRect 
 
@@ -43,7 +42,7 @@ class Application:
         self.displaySurface = None 
         self.fpsClock = None 
         self.attractors = []
-        self.size = self.width, self.height = 1920, 1080
+        self.size = self.width, self.height = 1800, 900
         self.count = 0 
         self.outputCount = 1
 
@@ -55,19 +54,33 @@ class Application:
         self.fpsClock = pygame.time.Clock() 
 
         # Configure attractor 
-        self.attractors = Lorenz() 
+        color = []
+        color.append((230, 57, 70))
+        color.append((233, 196, 106))
+        color.append((42, 157, 143))
+
+        for i in range(0, 3):
+            self.attractors.append(Lorenz())
+
+            self.attractors[i].X = random.uniform(-0.1, 0.1)
+
+            self.attractors[i].pixelColor = color[i]
+         
 
     def on_event(self, event):
         if event.type == pygame.QUIT:
+            print("ESCAPE!")
             self.isRunning = False 
 
     def on_loop(self):
-        self.attractors.step() 
+        for x in self.attractors:
+            x.step() 
 
     def on_render(self):
         # Draw attractor 
-        newRect = self.attractors.draw(self.displaySurface)
-        pygame.display.update(newRect)
+        for x in self.attractors:
+            newRect = x.draw(self.displaySurface)
+            pygame.display.update(newRect)
 
     def on_execute(self):
         if self.on_init() == False:
@@ -84,6 +97,7 @@ class Application:
             self.count += 1
 
         pygame.quit()
+        exit()
 
     
 if __name__ == "__main__":
