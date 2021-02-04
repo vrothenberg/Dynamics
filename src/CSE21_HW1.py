@@ -41,7 +41,6 @@ def DNA_recurrence(n):
         return 4
     return 3 * DNA_recurrence(n-1) + 3 * DNA_recurrence(n-2)
 
-
 # for i in range(1, 7):
 #     print(DNA_recurrence(i))
 
