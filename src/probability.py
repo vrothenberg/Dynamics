@@ -1,3 +1,5 @@
+#CSE 21 HW 0
+
 import random
 import math 
 
